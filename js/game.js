@@ -16,8 +16,8 @@ $(document).ready(function() {
 
 	// 지도 표시용 div 생성 및 삽입 (jQuery)
 	const $mapContainer = $('<div>').attr('id', 'map').css({
-		'width': '100%',
-		'height': '400px',
+		width: '100%',
+		height: '400px',
 		'margin-bottom': '10px'
 	});
 	$resultElem.after($mapContainer);
@@ -44,6 +44,7 @@ $(document).ready(function() {
 	let countries = [];
 	let regions = [];
 	let answersList = [];
+	let lastCountryCode = null; // ⬅ ISO 2자리 코드 저장(예: US, KR)
 
 	// -----------------------------
 	// 이벤트 리스너 (jQuery)
@@ -62,9 +63,7 @@ $(document).ready(function() {
 		}
 	});
 	$answerInput.on('keyup', function(e) {
-		if (e.key === 'Enter') {   // Enter 로 정답 제출
-			checkAnswer();
-		}
+		if (e.key === 'Enter') checkAnswer();
 	});
 	$showAnswersBtn.on('mouseover', function() {
 		showAnswersList();
@@ -87,17 +86,16 @@ $(document).ready(function() {
 	$worldMap.hide();
 
 	async function startRound() {
-		// 라운드 표시
 		$curRoundElem.text(currentRound);
 
 		// 로딩 표시
 		$latElem.text('로딩 중...');
 		$lngElem.text('로딩 중...');
 
-		// 난이도에 따른 총 라운드 수 표시
+		// 총 라운드 수 표시
 		$totalRoundElem.html(totalRound);
 
-		// 위도와 경도가 정해지기 전까지 버튼 클릭 불가
+		// 비활성화
 		disableInteraction();
 
 		// 이전 라운드 초기화
@@ -114,33 +112,37 @@ $(document).ready(function() {
 		hintUsed = 0;
 		correctCountry = '';
 		acceptedNames = [];
+		lastCountryCode = null;
 
 		let country = null;
 		let region = null;
-		let lat, lng;
+		let lat, lng, code;
 
 		// 앞서 출제되지 않은 유효한 국가가 나올 때까지 무작위 좌표 생성
 		while (true) {
-			lat = getRandomInRange(-90, 90, 6);    // 랜덤으로 위도 설정
-			lng = getRandomInRange(-180, 180, 6);  // 랜덤으로 경도 설정
+			lat = getRandomInRange(-90, 90, 6);
+			lng = getRandomInRange(-180, 180, 6);
 
 			try {
-				// ⬇️ 프록시 사용 (Vercel /api/geocode)
-				country = await getCountryFromCoordinates(lat, lng);
-
-				// 중복된 국가가 나온 경우 다시 로딩
+				// ⬇️ 프록시 사용: /api/geocode → { country, code }
+				const geo = await getCountryFromCoordinates(lat, lng);
+				country = geo.country;
+				code = geo.code; // ISO 3166-1 alpha-2 (예: US)
 				if (!country || countries.includes(country)) continue;
 
-				// 국가 세부 정보를 가져와서 지역 확인
-				const { region: newRegion } = await getCountryDetails(country);
-
-				// 중복된 대륙인 경우 다시 로딩
+				// 국가 세부 정보 (코드 우선)
+				const details = await getCountryDetails(country, code);
+				region = details.region;
 				if (quizType === 'region') {
-					if (!newRegion || regions.includes(newRegion)) continue;
+					if (!region || regions.includes(region)) continue;
 				}
-
-				// 조건을 모두 통과한 경우 루프 종료
-				region = newRegion;
+				// 조건 통과
+				correctCountry = details.displayName || country;
+				correctRegion = details.region;
+				capital = details.capitalCity;
+				acceptedNames = details.acceptedNames;
+				$hint3Btn.data('flagUrl', details.flagImageUrl || '');
+				lastCountryCode = details.code || code || null;
 				break;
 			} catch (err) {
 				console.warn('국가 정보 없음, 좌표 재시도 중...', err);
@@ -153,35 +155,16 @@ $(document).ready(function() {
 		lastLat = lat;
 		lastLng = lng;
 
-		// 국가 이름 기반으로 국기, 수도, 대체 이름 정보 가져오기
-		try {
-			correctCountry = country;
-			const { flagImageUrl, capitalCity, altSpellings, region } = await getCountryDetails(country);
-			capital = capitalCity;
-			// 수용 가능한 이름 집합 구성 (정규화 + 중복 제거)
-			const nameSet = new Set((altSpellings || []).map(normalizeName));
-			nameSet.add(normalizeName(correctCountry));
-			acceptedNames = Array.from(nameSet);
-			correctRegion = region;
+		// 한 번 출제된 국가는 다시 나오지 않도록 기록
+		countries.push(correctCountry);
+		regions.push(correctRegion);
 
-			$hint3Btn.data('flagUrl', flagImageUrl);
-		} catch (err) {
-			console.error('국가 상세 정보 오류', err);
-			correctCountry = '정보 없음';
-			capital = '정보 없음';
-			$hint3Btn.data('flagUrl', '');
-		}
-
-		// 한 번 출제된 국가는 다시 나오지 않도록 배열에 추가
-		countries.push(country);
-		regions.push(region);
-
-		// 사용자 입력, 버튼 활성화
+		// 활성화
 		enableInteraction();
 	}
 
 	// -----------------------------
-	// 상호작용 비활성화 (jQuery)
+	// 상호작용 비활성화/활성화
 	// -----------------------------
 	function disableInteraction() {
 		$answerInput.prop('disabled', true);
@@ -194,10 +177,6 @@ $(document).ready(function() {
 		$mapBtn.html('세계 지도 보기');
 		$submitBtn.prop('disabled', true);
 	}
-
-	// -----------------------------
-	// 상호작용 활성화 (jQuery)
-	// -----------------------------
 	function enableInteraction() {
 		$answerInput.prop('disabled', false);
 		$answerSelect.prop('disabled', false);
@@ -207,7 +186,7 @@ $(document).ready(function() {
 	}
 
 	// -----------------------------
-	// 특정 범위에서 소수점 포함 무작위 수 생성 (위도, 경도)
+	// 난수
 	// -----------------------------
 	function getRandomInRange(min, max, decimals) {
 		const str = (Math.random() * (max - min) + min).toFixed(decimals);
@@ -215,99 +194,92 @@ $(document).ready(function() {
 	}
 
 	// -----------------------------
-	// 좌표 → 국가명 변환 (Vercel 프록시 /api/geocode)
+	// ⬅ 좌표 → 국가 (프록시)
 	// -----------------------------
 	async function getCountryFromCoordinates(lat, lng) {
 		const r = await fetch(`/api/geocode?lat=${lat}&lng=${lng}`);
 		if (!r.ok) throw new Error('geocode error');
 		const data = await r.json();
-		const country = data.country;
-		if (!country) throw new Error('국가 정보를 찾을 수 없습니다.');
-		return country;
+		// { country: "...", code: "US" }
+		if (!data.country) throw new Error('국가 정보를 찾을 수 없습니다.');
+		return { country: data.country, code: (data.code || '').toUpperCase() };
 	}
 
 	// -----------------------------
-	// 국가 정보 (Vercel 프록시 /api/country) + 보강(altSpellings/번역)
+	// ⬅ 국가 상세 (ISO 코드 우선 → 정확한 국기/수도/지역)
+	//    - 코드가 있으면: https://restcountries.com/v3.1/alpha/{code}
+	//    - 코드 없으면:   name?fullText=true → 실패 시 name
 	// -----------------------------
-	async function getCountryDetails(countryName) {
+	async function getCountryDetails(countryName, countryCode) {
 		try {
-			// 1) 기본 정보는 프록시에서
-			const r = await fetch(`/api/country?name=${encodeURIComponent(countryName)}`);
-			if (!r.ok) throw new Error('country api error');
-			const info = await r.json();
-
-			const flagImageUrl = info.flagPng || info.flagSvg || '';
-			const capitalCity = info.capital || '정보 없음';
-			const region = info.region || '정보 없음';
-
-			// 2) altSpellings, translations 등은 공개 API로 보강(비밀 아님)
-			let altSpellings = [];
-			try {
-				let res = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(countryName)}?fullText=true`);
-				let data = await res.json();
-				if (!Array.isArray(data) || data.length === 0 || data.status === 404) {
-					res = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(countryName)}`);
-					data = await res.json();
+			let c; // restcountries 응답 객체
+			if (countryCode) {
+				const r = await fetch(`https://restcountries.com/v3.1/alpha/${encodeURIComponent(countryCode)}?fields=name,cca2,capital,flags,region,altSpellings,translations`);
+				if (!r.ok) throw new Error('alpha lookup failed');
+				const arr = await r.json();
+				c = Array.isArray(arr) ? arr[0] : arr;
+			} else {
+				// 이름 정확일치 우선
+				let r = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(countryName)}?fullText=true`);
+				let arr = await r.json();
+				if (!Array.isArray(arr) || arr.length === 0 || arr.status === 404) {
+					r = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(countryName)}`);
+					arr = await r.json();
 				}
-				const c = Array.isArray(data) ? data[0] : data;
-				if (c) {
-					const alts = c.altSpellings || [];
-					const trans = Object.values(c.translations || {}).map(obj => obj.common).filter(Boolean);
-					altSpellings = [...alts, ...trans];
-				}
-			} catch (_) {
-				// 무시: 보강 실패 시 기본만 사용
+				c = Array.isArray(arr) ? arr[0] : arr;
 			}
 
-			return { flagImageUrl, capitalCity, altSpellings, region };
+			const code = c?.cca2 || countryCode || null;
+			const displayName = c?.name?.common || countryName || '정보 없음';
+			const region = c?.region || '정보 없음';
+			const flagImageUrl = c?.flags?.png || c?.flags?.svg || '';
+			const capitalCity = Array.isArray(c?.capital) ? (c.capital[0] || '정보 없음') : (c?.capital || '정보 없음');
+			const alt = Array.isArray(c?.altSpellings) ? c.altSpellings : [];
+			const trans = c?.translations ? Object.values(c.translations).map(v => v?.common).filter(Boolean) : [];
+
+			// 수용 이름 집합
+			const nameSet = new Set([displayName, ...alt, ...trans].map(normalizeName));
+			return {
+				code,
+				displayName,
+				region,
+				capitalCity,
+				flagImageUrl,
+				acceptedNames: Array.from(nameSet)
+			};
 		} catch (err) {
 			console.error(err);
 			return {
-				flagImageUrl: '',
+				code: countryCode || null,
+				displayName: countryName || '정보 없음',
+				region: '정보 없음',
 				capitalCity: '정보 없음',
-				altSpellings: [],
-				region: '정보 없음'
+				flagImageUrl: '',
+				acceptedNames: [normalizeName(countryName || '')]
 			};
 		}
 	}
 
-	/* getCountryDetails 결과 예시
-	{
-	  "flagImageUrl": "https://flagcdn.com/w320/kr.png",
-	  "capitalCity": "Seoul",
-	  "altSpellings": ["KR","Korea, Republic of","대한민국","South Korea","Corée du Sud", ...],
-	  "region": "Asia"
-	}
-	*/
-
 	// -----------------------------
-	// 이전 라운드까지의 정답 리스트 출력
+	// 정답 리스트 출력
 	// -----------------------------
 	function showAnswersList() {
-		$showAnswersElem.empty(); // 이전 내용 비우기
-
-		// 표 생성
+		$showAnswersElem.empty();
 		const $table = $('<table>').attr('id', 'answer-list-table');
 		const $headerRow = $('<tr>').append($('<th>').text('라운드'), $('<th>').text('정답'));
 		$table.append($headerRow);
 
-		// 정답 리스트 추가
 		for (let i = 0; i < answersList.length; i++) {
 			const result = answersList[i];
 			const $row = $('<tr>').append($('<td>').text(result.round), $('<td>').text(result.answer));
-			if (result.isCorrect) {
-				$row.find('td:last-child').css('color', 'green'); // 정답인 경우 초록색
-			} else {
-				$row.find('td:last-child').css('color', 'red');   // 오답인 경우 빨간색
-			}
+			$row.find('td:last-child').css('color', result.isCorrect ? 'green' : 'red');
 			$table.append($row);
 		}
-
 		$showAnswersElem.append($table);
 	}
 
 	// -----------------------------
-	// 힌트 1 : 이미지 힌트 (Vercel 프록시 /api/hint-image)
+	// 힌트 1 : 이미지 (프록시 /api/hint-image)
 	// -----------------------------
 	function showHint1() {
 		$hintDisplay.append(`<p id="loading-text">이미지 로딩 중...</p>`);
@@ -334,7 +306,7 @@ $(document).ready(function() {
 	}
 
 	// -----------------------------
-	// 힌트 2 : 수도 힌트 (jQuery)
+	// 힌트 2 : 수도
 	// -----------------------------
 	function showHint2() {
 		$hintDisplay.append(`<p style="margin-top: 0;"> 수도: ${capital || '정보 없음'}</p>`);
@@ -344,7 +316,7 @@ $(document).ready(function() {
 	}
 
 	// -----------------------------
-	// 힌트 3 : 국기 힌트 (jQuery)
+	// 힌트 3 : 국기
 	// -----------------------------
 	function showHint3() {
 		const flagUrl = $hint3Btn.data('flagUrl');
@@ -358,8 +330,7 @@ $(document).ready(function() {
 	}
 
 	// -----------------------------
-	// 추가 힌트 : 세계 지도 확인 (토글 기능) (jQuery)
-	//           -> 난이도 쉬움, 보통 인 경우에만 표시
+	// 세계 지도 토글
 	// -----------------------------
 	function toggleMap() {
 		if ($worldMap.is(':hidden')) {
@@ -372,14 +343,14 @@ $(document).ready(function() {
 	}
 
 	// -----------------------------
-	// 이름 통일 처리 (대소문자, 공백, 발음기호 제거)
+	// 이름 정규화
 	// -----------------------------
 	function normalizeName(str) {
-		return str.trim().toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+		return (str || '').trim().toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
 	}
 
 	// -----------------------------
-	// 정답 제출 → 결과 처리 (jQuery)
+	// 채점
 	// -----------------------------
 	function checkAnswer() {
 		let userAnswer;
@@ -387,13 +358,12 @@ $(document).ready(function() {
 		let point = 0;
 		let message = '';
 
-		if (quizType === 'region') {   // 대륙 맞히기(초보) 난이도인 경우
+		if (quizType === 'region') {
 			userAnswer = $answerSelect.val();
 			if (userAnswer === 'none') {
 				alert('대륙 이름을 선택해주세요.');
 				return;
 			}
-
 			isCorrect = (correctRegion || '').toLowerCase().includes(userAnswer.toLowerCase());
 			if (isCorrect) {
 				switch (hintUsed) {
@@ -410,14 +380,12 @@ $(document).ready(function() {
 				message = `틀렸습니다. 정답은 ${correctRegion}입니다.`;
 				$resultElem.css('color', 'red');
 			}
-		}
-		else { // 국가 맞히기 난이도인 경우
+		} else {
 			userAnswer = $answerInput.val();
 			if (!userAnswer) {
 				alert('나라 이름을 입력해주세요.');
 				return;
 			}
-
 			const normalized = normalizeName(userAnswer);
 			isCorrect = acceptedNames.includes(normalized);
 
@@ -438,29 +406,26 @@ $(document).ready(function() {
 			}
 		}
 
-		// 정답 리스트 배열에 결과 추가
 		answersList.push({
 			round: currentRound,
 			answer: (quizType === 'region') ? correctRegion : correctCountry,
-			isCorrect: isCorrect,
+			isCorrect: isCorrect
 		});
 
-		// 채점 결과 화면 표시
 		$scoreElem.text(totalScore);
 		$resultElem.text(message);
 
-		// 다음 라운드 버튼 표시, 상호작용 비활성화
+		// 비활성화 + 다음 버튼
 		disableInteraction();
 		$nextBtn.show();
 		$nextBtn.text(currentRound === totalRound ? '결과 확인' : '다음 문제');
 
-		// 🔁 Google Maps(키 필요) → OSM 임베드(키 불필요)로 교체
-		const delta = 5; // 확대/범위 (도 단위)
+		// OSM 임베드(키 불필요)
+		const delta = 5;
 		const minLat = clamp(lastLat - delta, -90, 90);
 		const maxLat = clamp(lastLat + delta, -90, 90);
 		const minLng = clamp(lastLng - delta, -180, 180);
 		const maxLng = clamp(lastLng + delta, -180, 180);
-
 		const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(minLng)},${encodeURIComponent(minLat)},${encodeURIComponent(maxLng)},${encodeURIComponent(maxLat)}&layer=mapnik&marker=${encodeURIComponent(lastLat)},${encodeURIComponent(lastLng)}`;
 		$mapContainer.html(`<iframe width="100%" height="100%" style="border:0" src="${mapSrc}" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>`);
 	}
@@ -470,7 +435,7 @@ $(document).ready(function() {
 	}
 
 	// -----------------------------
-	// 다음 라운드로 이동 또는 결과 페이지로 이동 (jQuery)
+	// 다음 라운드
 	// -----------------------------
 	function nextRound() {
 		currentRound++;
