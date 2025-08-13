@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Guess The Country</title>
+	
+	<link rel="stylesheet" href="css/basic.css">
+	<link rel="stylesheet" href="css/result.css">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="https://kit.fontawesome.com/686c80b63a.js" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+	
+	<script src="js/index.js"></script>
+	<script src="js/result.js" defer></script>
+</head>
+<body>
+	<div id="container">
+		<!-- top menu -->
+		<div class="topnav">
+			<a href="index.html" class="active">Guess The Country</a>
+			<!-- 메뉴 (default: 숨김) -->
+			<div id="myLinks">
+				<a href="index.html">메인 화면</a>
+				<a href="game.html">게임 시작</a>
+				<a href="about.html">게임 정보</a>
+				
+				<div class="pc-mode-toggle">
+					<button id="light-pc" class="mode"><i class="fa-solid fa-moon"></i></button>	<!-- 라이트 모드 -->
+					<button id="dark-pc" class="mode"><i class="fa-solid fa-sun"></i></button>		<!-- 다크 모드 -->
+				</div>
+			</div>
+			
+			<!-- 햄버거 메뉴 아이콘 -->
+			<a href="#" class="icon">
+				<i class="fa fa-bars"></i>
+			</a>
+		</div>
+		
+		
+		<div id="contents">
+			<a href="index.html"><h1>🌏 국가 맞히기 게임 🌍 <br> 결과 확인</h1></a>
+			
+			<h3>
+				&lt; 총 점수 &gt; <br>
+				<span id="total-score"></span> 점 / <span id="max-score"></span> 점
+			</h3>
+			
+			<a href="game.html"><button class="button">다시하기</button></a>
+			<a href="index.html"><button class="button">메인 화면으로 이동</button></a>
+			<a href="about.html"><button class="button">게임 정보 확인</button></a>
+		</div>
+		
+		<!-- 라이트 모드 / 다크 모드 전환 -->
+		<div class="mode-toggle">
+			<button id="light" class="mode"><i class="fa-solid fa-moon"></i></button>	<!-- 라이트 모드 -->
+			<button id="dark" class="mode"><i class="fa-solid fa-sun"></i></button>		<!-- 다크 모드 -->
+		</div>
+	</div>
+	
+	<div id="footer">
+		<div id="copyright">&copy; 2025. dlkara All Rights Reserved.</div>
+	</div>
+</body>
+</html>

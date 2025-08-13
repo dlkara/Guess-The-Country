@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<title>Guess The Country</title>
+	
+	<link rel="stylesheet" href="css/basic.css">
+	<link rel="stylesheet" href="css/game.css">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="https://kit.fontawesome.com/686c80b63a.js" crossorigin="anonymous"></script>
+	<script src="js/index.js"></script>
+	<script src="js/game.js" defer></script>
+</head>
+<body>
+	<div id="container">
+		<!-- top menu -->
+		<div class="topnav">
+			<a href="index.html" class="active">Guess The Country</a>
+			<!-- 메뉴 (default: 숨김) -->
+			<div id="myLinks">
+				<a href="index.html">메인 화면</a>
+				<a href="game.html">게임 시작</a>
+				<a href="about.html">게임 정보</a>
+				
+				<div class="pc-mode-toggle">
+					<button id="light-pc" class="mode"><i class="fa-solid fa-moon"></i></button>	<!-- 라이트 모드 -->
+					<button id="dark-pc" class="mode"><i class="fa-solid fa-sun"></i></button>		<!-- 다크 모드 -->
+				</div>
+			</div>
+			
+			<!-- 햄버거 메뉴 아이콘 -->
+			<a href="#" class="icon">
+				<i class="fa fa-bars"></i>
+			</a>
+		</div>
+		
+		
+		<div id="contents">
+			<a href="index.html"><h1 id="title">🌏 국가 맞히기 게임 🌍</h1></a>
+			
+			<!-- 현재 라운드, 누적 점수 표시 -->
+			<div id="round-display"><span id="current-round">1</span> / <span id="total-round">5</span></div>
+			<div id="score-display">
+				현재 점수&nbsp;:&nbsp;<span id="score">0</span>
+				<div id="answer-list-popup">
+					<button id="answer-list-popup-button"><i class="fa-solid fa-question"></i></button>
+					<div id="answer-list">
+						<div id="answer-list-table"></div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 문제 : 위도, 경도 표시 -->
+			<div id="question">
+				<p><strong>다음 좌표의 위치를 맞혀보세요!</strong></p>
+				<table id="coordinates">
+					<tr>
+						<th>위도</th>
+						<td id="lat"></td>
+					</tr>
+					<tr>
+						<th>경도</th>
+						<td id="lng"></td>
+					</tr>
+				</table>
+			</div>
+			
+			
+			<!-- 난이도 = 초보 : 입력값 -->
+			<select id="answer-select">
+				<option value="none" selected>대륙 이름을 선택하세요</option>
+				<option value="Africa">아프리카</option>
+				<option value="Americas">아메리카</option>
+				<option value="Asia">아시아</option>
+				<option value="Europe">유럽</option>
+				<option value="Oceania">오세아니아</option>
+			</select>
+			
+			<!-- 그 외 난이도 : 입력값 -->
+			<input type="text" id="answer-input" placeholder="나라 이름을 입력하세요">
+			
+			
+			<!-- 힌트 표시 버튼 -->
+			<div id="hints">
+				<button class="button" id="hint1">힌트 1 (이미지)</button>
+				<button class="button" id="hint2" disabled>힌트 2 (수도)</button>
+				<button class="button" id="hint3" disabled>힌트 3 (국기)</button>
+			</div>
+			
+			<!-- 힌트 결과 출력 영역 -->
+			<div id="hint-display">
+				<div id="hint-image"></div>
+				<div id="hint-flag"></div>
+				<div id="hint-capital"></div>
+			</div>
+			
+			<!-- 세계 지도 표시 영역 (힌트 차감 X) -->
+			<div id="worldMap-display">
+				<button class="button" id="worldMap-btn">세계 지도 보기</button>
+				<img src="img/world-map-mercator.jpg" id="worldMap-img">
+			</div>
+			
+			
+			<!-- 정답 제출 버튼 -->
+			<button class="button" id="submit-answer">정답 제출</button>
+			<div id="result"></div>
+			
+			<!-- 정답 제출 후 다음 문제 버튼 -->
+			<button class="button" id="next-question">다음 문제</button>
+		</div>
+		
+		
+		<!-- 라이트 모드 / 다크 모드 전환 -->
+		<div class="mode-toggle">
+			<button id="light" class="mode"><i class="fa-solid fa-moon"></i></button>	<!-- 라이트 모드 -->
+			<button id="dark" class="mode"><i class="fa-solid fa-sun"></i></button>		<!-- 다크 모드 -->
+		</div>
+	</div>
+	
+	
+	<div id="footer">
+		<div id="copyright">&copy; 2025. dlkara All Rights Reserved.</div>
+	</div>
+</body>
+</html>

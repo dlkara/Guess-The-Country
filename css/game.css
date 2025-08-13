@@ -1,0 +1,206 @@
+/* 타이틀 */
+h1#title {
+    display: block;
+    margin-top: 40px;
+}
+
+
+/* 일반 폰트 크기 지정 */
+#round-display, #score-display, p {
+    display: block;
+    font-size: 2em;
+}
+
+#score-display {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#current-round, #score {
+    font-weight: bold;
+    color: #2196F3;
+}
+
+#result {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+
+/* 현재까지의 정답 리스트 팝업 */
+#answer-list-popup {
+    display: inline-block;
+}
+
+#answer-list-popup-button {
+    display: flex;
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    border-radius: 50%;
+    border: 1px solid;
+
+    line-height: 50px;
+    font-size: 0.7em;
+    justify-content: center;
+    align-items: center;
+}
+#answer-list-popup-button:hover {
+    background-color: rgba(100, 100, 100, 0.5);
+}
+
+#answer-list {
+    display: none;
+    position: absolute;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#answer-list-table {
+    width: 100%;
+    right: 20px;
+    left: 0;
+    background-color: #fff;
+    font-size: 0.5em;
+}
+
+#answer-list-table th, #answer-list-table td {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+}
+#answer-list-table th {
+    padding: 10px 20px;
+    white-space: nowrap;    /* 내용 줄바꿈 허용 X */
+}
+
+body.dark-mode #answer-list-table {
+    background-color: #000;
+}
+body.dark-mode #answer-list-table th {
+    background-color: #555;
+}
+
+
+/* 위도 경도 테이블 중앙 정렬 */
+#coordinates {
+    margin: 10px auto 0;
+    border-collapse: collapse;
+}
+
+#coordinates th,
+#coordinates td {
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+}
+
+
+/* 객관식 입력창 스타일 */
+#answer-select {
+    margin: 50px auto;
+    padding: 10px 30px;
+    min-width: 50%;
+    border: 1px solid #ccc;
+    font-size: 2em;
+}
+
+
+/* 주관식 입력창 스타일 */
+#answer-input {
+    margin: 50px auto;
+    padding: 10px;
+    min-width: 50%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 2em;
+}
+
+
+/* 힌트 버튼 영역 */
+#hints {
+    justify-content: center;
+}
+
+/* 힌트 전체 출력 영역 */
+#hint-display {
+    margin-top: 20px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center; /* 중앙 정렬 */
+    text-align: center;  /* 텍스트 중앙 정렬 */
+}
+
+/* 각 힌트 요소들도 너비를 자동으로 줄여 중앙에 맞춤 */
+#hint-image,
+#hint-flag,
+#hint-capital {
+    width: fit-content;
+    max-width: 100%;
+}
+
+/* 힌트 1 - 이미지 */
+#hint-image {
+    padding: 12px;
+    background-color: #e6f4ff;
+    border: 1px solid #b3daff;
+}
+
+/* 힌트 2 - 국기 */
+#hint-flag {
+    padding: 12px;
+    background-color: #e9fce9;
+    border: 1px solid #b2e2b2;
+}
+
+/* 힌트 3 - 수도 */
+#hint-capital {
+    padding: 12px;
+    background-color: #fff9e6;
+    border: 1px solid #ffe299;
+}
+
+/* 힌트 이미지 및 국기 이미지 공통 */
+#hint-image img,
+#hint-flag img {
+    min-width: 50%;
+    max-width: 100%;
+}
+
+
+/* 추가 힌트 - 세계 지도 이미지 */
+#worldMap-img {
+    position: relative;
+    margin: auto;
+    max-width: 600px;
+}
+
+
+/* 정답 제출 & 다음 버튼 */
+#submit-answer {
+    margin-top: 30px;
+    text-align: center;
+}
+#submit-answer:disabled {
+    color: #888;
+}
+
+#result {
+    margin: 50px auto 80px;
+}
+
+#next-question {
+    display: none;
+    margin: 50px auto;
+}
+
+
+
+/* PC 용 (100px 이상) */
+@media (min-width: 1000px) {
+    #hints {
+        display: flex;
+    }
+}

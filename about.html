@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Guess The Country</title>
+	
+	<link rel="stylesheet" href="css/basic.css">
+	<link rel="stylesheet" href="css/about.css">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="https://kit.fontawesome.com/686c80b63a.js" crossorigin="anonymous"></script>
+	<script src="js/index.js" defer></script>
+</head>
+<body>
+	<div id="container">
+		<!-- top menu -->
+		<div class="topnav">
+			<a href="index.html" class="active">Guess The Country</a>
+			<!-- 메뉴 (default: 숨김) -->
+			<div id="myLinks">
+				<a href="index.html">메인 화면</a>
+				<a href="game.html">게임 시작</a>
+				<a href="about.html">게임 정보</a>
+				
+				<div class="pc-mode-toggle">
+					<button id="light-pc" class="mode"><i class="fa-solid fa-moon"></i></button>	<!-- 라이트 모드 -->
+					<button id="dark-pc" class="mode"><i class="fa-solid fa-sun"></i></button>		<!-- 다크 모드 -->
+				</div>
+			</div>
+			
+			<!-- 햄버거 메뉴 아이콘 -->
+			<a href="#" class="icon">
+				<i class="fa fa-bars"></i>
+			</a>
+		</div>
+		
+		<div id="contents">
+			<!-- 제목 -->
+			<a href="index.html"><h1 id="title">
+				🌏 국가 맞히기 게임 🌍<br>
+				정보
+			</h1></a>
+			
+			<div id="content">
+				<!-- 제작자 정보 -->
+				<div id="developer-info" class="info">
+					<h3 class="subtitle">제작자 정보</h3>
+					<table>
+						<tr>
+							<th>이름</th>
+							<td>이현정</td>
+						</tr>
+						<tr>
+							<th>제작 기간</th>
+							<td>2025. 4. 6. ~ 2025. 4. 11</td>
+						</tr>
+					</table>
+				</div>
+				
+				<!-- 사용한 API 정보 -->
+				<div id="api-info" class="info">
+					<h3 class="subtitle">API 정보</h3>
+					<table>
+						<tr>
+							<th rowspan="2">주소<br>정보</th>
+							<td>
+								<a href="https://nominatim.openstreetmap.org/ui/search.html">OpenStreetMap<br>Nominatim API</a><br>
+								<span class="detail">(좌표-국가명 변환)</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="https://restcountries.com/">REST Countries API</a><br>
+								<span class="detail">(국가명을 기반으로 국기, 수도 등 정보 요청)</span>
+							</td>
+						</tr>
+						<tr>
+							<th>사진</th>
+							<td><a href="https://unsplash.com/developers">Unsplash open API</a></td>
+						</tr>
+						<tr>
+							<th>지도</th>
+							<td><a href="https://console.cloud.google.com/">Google Map API</a></td>
+						</tr>
+					</table>
+				</div>
+				
+				<a href="index.html"><button id="go-to-main" class="button">메인 화면으로 이동</button></a>
+			</div>
+		</div>
+		
+		<!-- 라이트 모드 / 다크 모드 전환 -->
+		<div class="mode-toggle">
+			<button id="light" class="mode"><i class="fa-solid fa-moon"></i></button>	<!-- 라이트 모드 -->
+			<button id="dark" class="mode"><i class="fa-solid fa-sun"></i></button>		<!-- 다크 모드 -->
+		</div>
+	</div>
+	
+	<div id="footer">
+		<div id="copyright">&copy; 2025. dlkara All Rights Reserved.</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+div#info {
+    margin: 10px auto 0;
+    display: flex;
+}
+
+.subtitle {
+    margin-bottom: 30px;
+}
+
+#go-to-main {
+    margin-top: 0;
+    margin-bottom: 50px;
+}
+
+table {
+    min-width: 500px;
+    margin: 0 auto 100px;
+}
+
+table tr, td {
+    margin: 10px auto 0;
+    padding: 8px 16px;
+    border-collapse: collapse;
+}
+
+table a {
+    display: inline-block;
+    padding: 0 10px;
+    text-decoration: none;
+    font-style: italic;
+    color: black;
+}
+table a:hover {
+    background-color: yellow;
+    color: black;
+}
+table a:active {
+    color: red;
+}
+table a:link {
+    color: #000;
+}
+body.dark-mode table a:link {
+    color: #fff;
+}
+body.dark-mode table a:hover {
+    color: black;
+}
+table a:visited {
+    color: #888;
+}
+
+span.detail {
+    font-size: 0.7em;
+}

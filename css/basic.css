@@ -1,0 +1,330 @@
+/* mobile first */
+
+
+/* 기본 설정 */
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1, h2, h3, h4, h5, h6, button, select {
+    font-family: 'GmarketSansMedium', sans-serif !important;
+}
+body, p, span, a, input, textarea {
+    font-family: 'Pretendard-Regular', sans-serif !important;
+}
+
+body {
+    margin: 0;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+#container {
+    max-width: 1000px;
+    margin: 0 auto;
+
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    z-index: 100;
+}
+
+#container, button, a {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+/* 상단 토글 메뉴 */
+.topnav {
+    overflow: hidden;
+    background-color: #333;
+    position: relative;
+    margin: 0;
+    z-index: 100;
+}
+
+.topnav #myLinks {
+    display: none;
+}
+
+.topnav a {
+    color: white;
+    padding: 20px 30px;
+    text-decoration: none;
+    font-size: 2em;
+    display: block;
+}
+.topnav a.icon {
+    background: black;
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.active {
+    background-color: #2196F3;
+    color: white;
+}
+
+
+div#contents {
+    min-height: 800px;
+    /*margin: 200px 0;*/
+    flex: 1;
+}
+
+h1 {
+    margin-bottom: 100px;
+    font-size: 3.5em;
+}
+h3 {
+    margin-bottom: 100px;
+    font-size: 2em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.button {
+    width: 100%;
+    min-width: 110px;
+    max-width: 600px;
+
+    margin: 10px;
+    padding: 20px;
+
+    border: 1px solid #333;
+    border-radius: 6px;
+    background-color: #f0f0f0;
+
+    font-size: 30px;
+    font-weight: bold;
+
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+.button:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+.button:disabled {
+    background-color: #ddd;
+    color: #888;
+    cursor: not-allowed;
+}
+
+
+button.mode {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 50px;
+}
+button.mode:hover {
+    opacity: 0.7;
+}
+
+.mode-toggle {
+    display: flex;
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    z-index: 100;
+}
+.pc-mode-toggle {
+    display: none;
+}
+
+
+/* 다크 모드 전체 적용 */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+}
+
+/* 버튼들에 다크 모드 스타일 */
+body.dark-mode button {
+    background-color: #333;
+    color: #f0f0f0;
+    border: 1px solid #555;
+}
+body.dark-mode .button:hover:not(:disabled) {
+    background-color: rgba(224, 224, 224, 0.3);
+}
+body.dark-mode .button:disabled {
+    background-color: #555;
+}
+
+body.dark-mode table,
+body.dark-mode tr,
+body.dark-mode th,
+body.dark-mode td {
+    border: 1px solid #aaa;
+}
+
+/* 난이도 선택창 다크 모드 스타일 */
+body.dark-mode h2 {
+    color: #f0f0f0;
+}
+body.dark-mode .popup-content {
+    background-color: #1e1e1e;
+    border: 1px solid #aaa;
+    box-shadow: 1px 1px 10px #aaa;
+}
+
+/* 입력창 다크 모드 스타일 */
+body.dark-mode #answer-input {
+    background-color: #555;
+    color: #f0f0f0;
+}
+body.dark-mode #answer-select {
+    background-color: #555;
+    color: #f0f0f0;
+}
+
+
+/* 표 스타일 */
+table, tr, td, th {
+    padding: 10px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid black;
+    font-size: 1.2em;
+}
+
+table {
+    width: 50%;
+}
+
+th {
+    background-color: rgba(200, 200, 200, 0.3);
+}
+
+
+/* footer 설정 */
+#footer {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    bottom: 0;
+    padding: 15px 0;
+    margin-bottom: 0;
+
+    background-color: #f0f0f0;
+    color: #000;
+    align-content: center;
+    text-align: center;
+    font-size: 1.6em;
+}
+
+/* 다크 모드용 푸터 */
+body.dark-mode #footer {
+    background-color: #111;
+    color: #f0f0f0;
+}
+
+
+
+/* PC 용 (768px 이상) */
+@media (min-width: 768px) {
+    .container {
+        max-width: 2000px;
+        width: 100%;
+    }
+
+
+    /* 메뉴 버튼이 왼쪽에 사이드바로 위치, 토글 X */
+    .topnav {
+        width: 200px;
+        height: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .topnav a {
+        padding: 20px;
+        font-size: 1.2em;
+    }
+
+    .topnav #myLinks {
+        display: block;
+    }
+
+    .topnav a.icon {
+        display: none;
+    }
+    div#contents {
+        margin-left: 200px;
+        margin-right: 0;
+    }
+
+
+    /* PC 환경에서는 모바일 전용 토글 버튼 숨김 */
+    .mode-toggle {
+        display: none;
+    }
+
+    /* 다크 모드 전환 버튼을 사이드 메뉴 하단에 배치 */
+    .pc-mode-toggle {
+        display: flex;
+        position: absolute;
+        bottom: 50px;
+        left: 100px;
+        transform: translateX(-50%);
+        z-index: 100;
+    }
+
+
+    /* 폰트 크기를 PC 환경에 맞게 수정 */
+    h1 {
+        font-size: 2.5em;
+    }
+
+    h3 {
+        font-size: 1.5em;
+    }
+
+    /* 버튼 설정 수정 */
+    .button {
+        font-size: 20px;
+    }
+
+    /* footer */
+    #footer {
+        /*position: relative;*/
+        width: calc(100% - 200px);
+        margin-left: 200px;
+        margin-bottom: 0;
+        font-size: 1.2em;
+        z-index: -10;
+    }
+}
