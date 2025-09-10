@@ -116,10 +116,31 @@ vercel dev   # http://localhost:3000
 > (현재는 클라이언트 직접 호출).
 
 
-## 🖼 스크린샷/GIF
-docs/screenshot-1.png — 게임 화면
+## ➡️ 흐름도 및 스토리보드
 
-docs/screenshot-2.gif — 힌트/채점 플로우
+- 흐름도
+  ![흐름도](./doc/myweb-흐름도.png)
+
+- 구성도
+  ![구성도](./doc/myweb-구성도.png)
+  
+- 스토리보드: [기획서.pptx](./doc/기획서.pptx)
+
+
+## 🖼 스크린샷/GIF
+
+- 시작 화면
+  ![시작 화면 스크린샷](./doc/myweb-index.png)
+
+- 게임 화면
+  ![게임 화면 스크린샷 1](./doc/myweb-game.png)
+  ![게임 화면 스크린샷 2](./doc/myweb-game2.png)
+  
+- 결과 화면
+  ![결과 화면 스크린샷](./doc/myweb-result_confetti-100.png)
+  
+- 정보 화면
+  ![정보 화면 스크린샷](./doc/myweb-about.png)
 
 
 ## 🧪 품질/운영 팁
